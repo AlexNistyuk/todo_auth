@@ -34,9 +34,12 @@ class BaseUseCase(IUseCase):
 
     async def get_by_filters(self, **filters) -> Sequence:
         async with self.uow:
-            result = await self.uow.repository.get_by_filters(**filters)
+            return await self.uow.repository.get_by_filters(**filters)
 
-            await self.uow.commit()
+    async def get_all(self) -> Sequence:
+        async with self.uow:
+            result = await self.uow.repository.get_all()
+
         return result
 
     async def get_by_id(self, record_id: int) -> Row | None:
