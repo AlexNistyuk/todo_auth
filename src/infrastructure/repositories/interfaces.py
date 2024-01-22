@@ -21,6 +21,10 @@ class IRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
+    async def get_all(self, *args, **kwargs):
+        raise NotImplementedError
+
+    @abstractmethod
     async def get_by_id(self, *args, **kwargs):
         raise NotImplementedError
 

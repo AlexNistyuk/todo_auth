@@ -41,6 +41,12 @@ class BaseRepository(IRepository):
 
         return result.all()
 
+    async def get_all(self) -> Sequence:
+        query = select(self.model)
+        result = await self.session.execute(query)
+
+        return result.all()
+
     async def get_by_id(self, record_id: int) -> Row | None:
         query = select(self.model).filter_by(id=record_id)
         result = await self.session.execute(query)
