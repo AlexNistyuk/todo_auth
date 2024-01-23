@@ -1,4 +1,4 @@
-from domain.models.users import User
+from infrastructure.models.users import User
 from infrastructure.repositories.base import BaseRepository
 
 

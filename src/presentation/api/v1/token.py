@@ -1,30 +1,21 @@
-from fastapi import APIRouter, HTTPException
-from starlette.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from fastapi import APIRouter
+from starlette.requests import Request
+from starlette.responses import Response
+from starlette.status import HTTP_200_OK
 
-from application.use_cases.users import UserUseCase
+from application.use_cases.token import TokenUseCase
 from domain.entities.token import TokenDTO
-from domain.entities.users import UserGetDTO
-from domain.utils.token import Token
 
 router = APIRouter(prefix="/token", tags=["Token"])
 
 
-@router.get("/refresh", response_model=TokenDTO, status_code=HTTP_200_OK)
+@router.post("/refresh", response_model=TokenDTO, status_code=HTTP_200_OK)
 async def get_new_tokens(refresh_token: str):
-    try:
-        payload = Token().get_payload(refresh_token)
-        if payload.get("type") != "refresh_token":
-            raise HTTPException(
-                detail="Invalid token", status_code=HTTP_400_BAD_REQUEST
-            )
+    return await TokenUseCase().get_new_tokens(refresh_token)
 
-        user_data = await UserUseCase().get_by_id(payload["id"])
-        user = UserGetDTO(**user_data)
 
-        return Token(user).get_tokens()
-    except HTTPException:
-        raise
-    except Exception as exc:
-        raise HTTPException(
-            detail={"error": str(exc)}, status_code=HTTP_400_BAD_REQUEST
-        )
+@router.get("/verify", status_code=HTTP_200_OK)
+async def verify_token(request: Request):
+    await TokenUseCase().verify(request.headers)
+
+    return Response(content="valid")
