@@ -1,10 +1,7 @@
 from typing import Sequence
 
-from fastapi import HTTPException
 from sqlalchemy import delete, insert, select, update
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.status import HTTP_404_NOT_FOUND
 
 from infrastructure.repositories.interfaces import IRepository
 
@@ -54,19 +51,13 @@ class BaseRepository(IRepository):
         query = select(self.model).filter_by(id=record_id)
         result = await self.session.execute(query)
 
-        try:
-            return result.scalar_one().__dict__
-        except NoResultFound:
-            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)
+        return result.scalar_one().__dict__
 
     async def get_by_username(self, username: str) -> dict:
         query = select(self.model).filter_by(username=username)
         result = await self.session.execute(query)
 
-        try:
-            return result.scalar_one().__dict__
-        except NoResultFound:
-            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)
+        return result.scalar_one().__dict__
 
     async def delete_by_filters(self, **filters) -> None:
         query = delete(self.model).filter_by(**filters)
@@ -76,7 +67,4 @@ class BaseRepository(IRepository):
         query = delete(self.model).filter_by(id=record_id).returning(self.model.id)
         result = await self.session.execute(query)
 
-        try:
-            return result.scalar_one()
-        except NoResultFound:
-            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)
+        return result.scalar_one()

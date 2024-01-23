@@ -9,6 +9,7 @@ class BaseUnitOfWork(DatabaseManager, IUnitOfWork):
     """Base unit of work"""
 
     repository: Type[IRepository]
+    repo = None
 
     async def __aenter__(self):
         self.session = self.async_session_maker()

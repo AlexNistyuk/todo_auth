@@ -1,4 +1,8 @@
-from starlette.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED
+from starlette.status import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_401_UNAUTHORIZED,
+    HTTP_404_NOT_FOUND,
+)
 
 from domain.exceptions.base import BaseHTTPException
 
@@ -9,3 +13,7 @@ class HTTP400(BaseHTTPException):
 
 class HTTP401(BaseHTTPException):
     status_code = HTTP_401_UNAUTHORIZED
+
+
+class HTTP404(BaseHTTPException):
+    status_code = HTTP_404_NOT_FOUND
