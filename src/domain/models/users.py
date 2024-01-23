@@ -15,7 +15,7 @@ class User(Base):
     username: Mapped[str] = mapped_column(
         String(20), unique=True, index=True, nullable=False
     )
-    password: Mapped[str] = mapped_column(String(20), nullable=False)
+    password: Mapped[str] = mapped_column(String(60), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         server_default=text("TIMEZONE('utc', now())")
     )

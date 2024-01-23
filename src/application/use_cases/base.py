@@ -1,7 +1,5 @@
 from typing import Sequence
 
-from sqlalchemy import Row
-
 from application.use_cases.interfaces import IUseCase
 from infrastructure.repositories.interfaces import IRepository
 from infrastructure.uow.base import UnitOfWork
@@ -10,8 +8,10 @@ from infrastructure.uow.base import UnitOfWork
 class BaseUseCase(IUseCase):
     """Base use case"""
 
-    repository: IRepository = None
-    uow = UnitOfWork(repository)
+    repository: IRepository
+
+    def __init__(self):
+        self.uow = UnitOfWork(self.repository)
 
     async def insert(self, data: dict) -> int:
         async with self.uow:
@@ -38,16 +38,11 @@ class BaseUseCase(IUseCase):
 
     async def get_all(self) -> Sequence:
         async with self.uow:
-            result = await self.uow.repository.get_all()
+            return await self.uow.repository.get_all()
 
-        return result
-
-    async def get_by_id(self, record_id: int) -> Row | None:
+    async def get_by_id(self, record_id: int) -> dict:
         async with self.uow:
-            result = await self.uow.repository.get_by_id(record_id)
-
-            await self.uow.commit()
-        return result
+            return await self.uow.repository.get_by_id(record_id)
 
     async def delete_by_filters(self, **filters) -> None:
         async with self.uow:

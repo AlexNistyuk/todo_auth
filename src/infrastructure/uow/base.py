@@ -1,10 +1,9 @@
 from infrastructure.managers.database import DatabaseManager
-from infrastructure.repositories.interfaces import IRepository
 from infrastructure.uow.interfaces import IUnitOfWork
 
 
 class UnitOfWork(DatabaseManager, IUnitOfWork):
-    def __init__(self, repository: IRepository):
+    def __init__(self, repository):
         self.repository = repository
 
     async def __aenter__(self):

@@ -1,7 +1,10 @@
 from typing import Sequence
 
-from sqlalchemy import Row, delete, insert, select, update
+from fastapi import HTTPException
+from sqlalchemy import delete, insert, select, update
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
+from starlette.status import HTTP_404_NOT_FOUND
 
 from infrastructure.repositories.interfaces import IRepository
 
@@ -39,19 +42,31 @@ class BaseRepository(IRepository):
         query = select(self.model).filter_by(**filters)
         result = await self.session.execute(query)
 
-        return result.all()
+        return result.scalars().all()
 
-    async def get_all(self) -> Sequence:
+    async def get_all(self) -> list[dict]:
         query = select(self.model)
         result = await self.session.execute(query)
 
-        return result.all()
+        return [item.__dict__ for item in result.scalars().all()]
 
-    async def get_by_id(self, record_id: int) -> Row | None:
+    async def get_by_id(self, record_id: int) -> dict:
         query = select(self.model).filter_by(id=record_id)
         result = await self.session.execute(query)
 
-        return result.one_or_none()
+        try:
+            return result.scalar_one().__dict__
+        except NoResultFound:
+            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)
+
+    async def get_by_username(self, username: str) -> dict:
+        query = select(self.model).filter_by(username=username)
+        result = await self.session.execute(query)
+
+        try:
+            return result.scalar_one().__dict__
+        except NoResultFound:
+            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)
 
     async def delete_by_filters(self, **filters) -> None:
         query = delete(self.model).filter_by(**filters)
@@ -61,4 +76,7 @@ class BaseRepository(IRepository):
         query = delete(self.model).filter_by(id=record_id).returning(self.model.id)
         result = await self.session.execute(query)
 
-        return result.scalar_one()
+        try:
+            return result.scalar_one()
+        except NoResultFound:
+            raise HTTPException(detail="Not found", status_code=HTTP_404_NOT_FOUND)

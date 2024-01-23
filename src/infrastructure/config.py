@@ -18,6 +18,11 @@ class Settings(BaseSettings):
     postgres_user: str
     postgres_password: str
     db_url: str
+    jwt_secret_key: str
+    jwt_access_token_expires_in: int
+    jwt_refresh_token_expires_in: int
+    jwt_algorithm: str
+    http_auth_keyword: str
 
     model_config = SettingsConfigDict(env_file=ENV_FILE_PATH)
 
