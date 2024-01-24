@@ -25,7 +25,7 @@ class TokenUseCase:
     def __raise_unauthorized_exception(self, message: Any):
         raise HTTP401(detail=message)
 
-    async def verify(self, headers: Headers) -> None:
+    async def verify(self, headers: Headers) -> dict:
         header_list = headers.get(settings.http_auth_header, "").split()
 
         if len(header_list) != 2:
@@ -37,3 +37,5 @@ class TokenUseCase:
         payload = Token().get_payload(header_list[1])
         if payload.get("type") != "access_token":
             self.__raise_unauthorized_exception("Invalid token")
+
+        return payload

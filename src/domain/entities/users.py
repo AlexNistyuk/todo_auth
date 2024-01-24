@@ -11,5 +11,6 @@ class UserCreateDTO(BaseModel):
 class UserGetDTO(BaseModel):
     id: int
     username: str
+    role: str
     created_at: datetime
     updated_at: datetime

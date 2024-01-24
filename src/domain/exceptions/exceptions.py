@@ -1,6 +1,7 @@
 from starlette.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
+    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
 )
 
@@ -13,6 +14,10 @@ class HTTP400(BaseHTTPException):
 
 class HTTP401(BaseHTTPException):
     status_code = HTTP_401_UNAUTHORIZED
+
+
+class HTTP403(BaseHTTPException):
+    status_code = HTTP_403_FORBIDDEN
 
 
 class HTTP404(BaseHTTPException):
