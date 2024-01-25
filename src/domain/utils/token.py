@@ -43,8 +43,8 @@ class Token:
             "refresh_token": self.get_refresh_token(),
         }
 
-    @staticmethod
-    def get_payload(token: str) -> dict:
+    @classmethod
+    def get_payload(cls, token: str) -> dict:
         try:
             return jwt.decode(
                 token, settings.jwt_secret_key, algorithms=[settings.jwt_algorithm]

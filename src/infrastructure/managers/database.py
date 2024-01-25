@@ -9,7 +9,11 @@ settings = get_settings()
 class DatabaseManager(IManager):
     """Database manager. Create engine and async session maker"""
 
-    engine: AsyncEngine = create_async_engine(settings.db_url)
+    engine: AsyncEngine = create_async_engine(
+        settings.db_url,
+        pool_size=settings.db_pool_size,
+        max_overflow=settings.db_max_overflow,
+    )
     async_session_maker = async_sessionmaker(engine, expire_on_commit=False)
 
     @classmethod

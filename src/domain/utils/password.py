@@ -6,8 +6,10 @@ class Password:
 
     pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-    def get_hashed_password(self, password: str) -> str:
-        return self.pwd_context.hash(password)
+    @classmethod
+    def get_hashed_password(cls, password: str) -> str:
+        return cls.pwd_context.hash(password)
 
-    def verify(self, password: str, hashed_password: str) -> bool:
-        return self.pwd_context.verify(password, hashed_password)
+    @classmethod
+    def verify(cls, password: str, hashed_password: str) -> bool:
+        return cls.pwd_context.verify(password, hashed_password)

@@ -4,7 +4,7 @@ import uvicorn
 from fastapi import FastAPI
 
 from infrastructure.managers.database import DatabaseManager
-from presentation.api.routers import router as v1_router
+from presentation.routers import router as api_router
 
 
 @asynccontextmanager
@@ -17,7 +17,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(v1_router)
+app.include_router(api_router)
 
 
 if __name__ == "__main__":

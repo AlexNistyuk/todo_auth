@@ -2,4 +2,6 @@
 
 cd src
 
-uvicorn main:app --reload --host $WEB_CONTAINER_HOST --port $WEB_PORT
+alembic upgrade head
+
+uvicorn main:app --host $WEB_CONTAINER_HOST --port $WEB_PORT --workers $WORKERS

@@ -12,12 +12,15 @@ class Settings(BaseSettings):
     web_host: str
     web_port: int
     web_container_host: str
+    workers: int
     postgres_host: str
     postgres_port: int
     postgres_db: str
     postgres_user: str
     postgres_password: str
     db_url: str
+    db_pool_size: int
+    db_max_overflow: int
     jwt_secret_key: str
     jwt_access_token_expires_in: int
     jwt_refresh_token_expires_in: int

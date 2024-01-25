@@ -1,22 +1,30 @@
-from typing import Type
-
 from infrastructure.managers.database import DatabaseManager
-from infrastructure.repositories.interfaces import IRepository
+from infrastructure.repositories.users import UserRepository
 from infrastructure.uow.interfaces import IUnitOfWork
 
 
-class BaseUnitOfWork(DatabaseManager, IUnitOfWork):
-    """Base unit of work"""
+class UnitOfWork(DatabaseManager, IUnitOfWork):
+    """Unit of work"""
 
-    repository: Type[IRepository]
-    repo = None
+    users = UserRepository()
+
+    def __call__(self, autocommit: bool = True):
+        self._autocommit = autocommit
+
+        return self
 
     async def __aenter__(self):
         self.session = self.async_session_maker()
-        self.repo = self.repository(self.session)
+        self.users(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        await self.rollback()
+        if exc_type is None:
+            if self._autocommit:
+                await self.commit()
+        else:
+            await self.rollback()
+
+        await self.session.close()
 
     async def commit(self):
         await self.session.commit()

@@ -8,9 +8,15 @@ class UserCreateDTO(BaseModel):
     password: str
 
 
-class UserGetDTO(BaseModel):
+class UserIdDTO(BaseModel):
     id: int
+
+
+class UserRetrieveDTO(UserIdDTO):
     username: str
     role: str
     created_at: datetime
     updated_at: datetime
+
+    class Config:
+        from_attributes = True
