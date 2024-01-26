@@ -2,6 +2,10 @@ from fastapi import Header
 from starlette.requests import Request
 
 from application.use_cases.token import TokenUseCase
+from domain.exceptions.repositories import (
+    RepositoryNotFoundError,
+    RepositoryUnknownError,
+)
 from domain.exceptions.token import InvalidTokenError
 from domain.exceptions.users import UserPermissionDenied
 from infrastructure.permissions.interfaces import IPermission
@@ -25,9 +29,15 @@ class BasePermission(IPermission):
     async def __get_user_role(self, headers: Header) -> str:
         payload = await self.token_use_case.verify(headers)
 
-        async with self.uow:
-            user = await self.uow.users.get_by_id(payload["id"])
-
-        if user is None:
+        user_id = payload.get("id")
+        if user_id is None:
             raise InvalidTokenError
-        return user["role"].value
+
+        try:
+            async with self.uow(autocommit=True):
+                user = await self.uow.users.get_by_id(user_id)
+        except RepositoryNotFoundError:
+            raise InvalidTokenError
+        except RepositoryUnknownError:
+            raise InvalidTokenError
+        return user.role.value

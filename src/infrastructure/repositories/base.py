@@ -17,15 +17,15 @@ class BaseRepository(IRepository):
 
     model = None
 
-    def __call__(self, session: AsyncSession = None):
-        self._session: AsyncSession = session
+    def __init__(self, session: AsyncSession):
+        self.session: AsyncSession = session
 
     async def insert(self, data: dict) -> int | None:
         try:
             query = insert(self.model).values(**data).returning(self.model.id)
-            result = await self._session.execute(query)
+            executor = await self.session.execute(query)
 
-            return result.scalar_one()
+            return executor.scalar_one()
         except IntegrityError:
             raise RepositoryIntegrityError
         except Exception:
@@ -34,7 +34,7 @@ class BaseRepository(IRepository):
     async def update_by_filters(self, data: dict, **filters) -> None:
         try:
             query = update(self.model).values(**data).filter_by(**filters)
-            await self._session.execute(query)
+            await self.session.execute(query)
         except NoResultFound:
             raise RepositoryNotFoundError
         except IntegrityError:
@@ -50,9 +50,9 @@ class BaseRepository(IRepository):
                 .filter_by(id=record_id)
                 .returning(self.model.id)
             )
-            result = await self._session.execute(query)
+            executor = await self.session.execute(query)
 
-            return result.scalar_one()
+            return executor.scalar_one()
         except NoResultFound:
             raise RepositoryNotFoundError
         except IntegrityError:
@@ -63,9 +63,12 @@ class BaseRepository(IRepository):
     async def get_by_filters(self, **filters) -> Sequence | None:
         try:
             query = select(self.model).filter_by(**filters)
-            result = await self._session.execute(query)
+            executor = await self.session.execute(query)
 
-            return result.scalars().all()
+            result = executor.scalars().all()
+            if not result:
+                raise RepositoryNotFoundError
+            return result
         except NoResultFound:
             raise RepositoryNotFoundError
         except Exception:
@@ -73,10 +76,13 @@ class BaseRepository(IRepository):
 
     async def get_all(self) -> Sequence | None:
         try:
-            query = select(self.model).where(self.model.id > 1)
-            result = await self._session.execute(query)
+            query = select(self.model)
+            executor = await self.session.execute(query)
 
-            return result.scalars().all()
+            result = executor.scalars().all()
+            if not result:
+                raise RepositoryNotFoundError
+            return result
         except NoResultFound:
             raise RepositoryNotFoundError
         except Exception:
@@ -85,20 +91,18 @@ class BaseRepository(IRepository):
     async def get_by_id(self, record_id: int) -> dict | None:
         try:
             query = select(self.model).filter_by(id=record_id)
-            result = await self._session.execute(query)
+            executor = await self.session.execute(query)
 
-            return result.scalar_one()
+            return executor.scalar_one()
         except NoResultFound:
             raise RepositoryNotFoundError
         except Exception:
             raise RepositoryUnknownError
 
-    async def delete_by_filters(self, **filters) -> bool | None:
+    async def delete_by_filters(self, **filters) -> None:
         try:
             query = delete(self.model).filter_by(**filters)
-            await self._session.execute(query)
-
-            return True
+            await self.session.execute(query)
         except NoResultFound:
             raise RepositoryNotFoundError
         except Exception:
@@ -107,9 +111,9 @@ class BaseRepository(IRepository):
     async def delete_by_id(self, record_id: int) -> int | None:
         try:
             query = delete(self.model).filter_by(id=record_id).returning(self.model.id)
-            result = await self._session.execute(query)
+            executor = await self.session.execute(query)
 
-            return result.scalar_one()
+            return executor.scalar_one()
         except NoResultFound:
             raise RepositoryNotFoundError
         except Exception:

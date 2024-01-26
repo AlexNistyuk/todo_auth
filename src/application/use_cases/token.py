@@ -17,7 +17,11 @@ class TokenUseCase:
         if payload.get("type") != "refresh_token":
             raise InvalidTokenError
 
-        user = await UserUseCase().get_by_id(payload["id"])
+        user_id = payload.get("id")
+        if user_id is None:
+            raise InvalidTokenError
+
+        user = await UserUseCase().get_by_id(user_id)
 
         return Token(user.id).get_tokens()
 
@@ -34,5 +38,4 @@ class TokenUseCase:
         payload = Token.get_payload(header_list[1])
         if payload.get("type") != "access_token":
             raise InvalidTokenError
-
         return payload

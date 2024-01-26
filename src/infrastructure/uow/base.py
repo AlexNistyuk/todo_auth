@@ -6,7 +6,8 @@ from infrastructure.uow.interfaces import IUnitOfWork
 class UnitOfWork(DatabaseManager, IUnitOfWork):
     """Unit of work"""
 
-    users = UserRepository()
+    def __init__(self):
+        self.session_factory = self.async_session_maker
 
     def __call__(self, autocommit: bool = True):
         self._autocommit = autocommit
@@ -14,8 +15,8 @@ class UnitOfWork(DatabaseManager, IUnitOfWork):
         return self
 
     async def __aenter__(self):
-        self.session = self.async_session_maker()
-        self.users(self.session)
+        self.session = await self.session_factory()
+        self.users = UserRepository(self.session)
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:

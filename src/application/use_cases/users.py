@@ -52,10 +52,10 @@ class UserUseCase(IUseCase):
         except RepositoryUnknownError:
             raise UserUpdateError
 
-    async def update_by_id(self, data: dict, record_id: int) -> int:
+    async def update_by_id(self, data: dict, user_id: int) -> int:
         try:
             async with self.uow(autocommit=True):
-                result = await self.uow.users.update_by_id(data, record_id)
+                result = await self.uow.users.update_by_id(data, user_id)
         except RepositoryNotFoundError:
             raise UserNotFoundError
         except RepositoryIntegrityError:
@@ -69,25 +69,25 @@ class UserUseCase(IUseCase):
             async with self.uow(autocommit=True):
                 result = await self.uow.users.get_by_filters(**filters)
         except RepositoryNotFoundError:
-            raise UserNotFoundError
+            raise []
         except RepositoryUnknownError:
             raise UserRetrieveError
         return result
 
-    async def get_all(self) -> Sequence[User]:
+    async def get_all(self) -> Sequence:
         try:
             async with self.uow(autocommit=True):
                 result = await self.uow.users.get_all()
         except RepositoryNotFoundError:
-            raise UserNotFoundError
+            return []
         except RepositoryUnknownError:
             raise UserRetrieveError
         return result
 
-    async def get_by_id(self, record_id: int) -> User:
+    async def get_by_id(self, user_id: int) -> User:
         try:
             async with self.uow(autocommit=True):
-                result = await self.uow.users.get_by_id(record_id)
+                result = await self.uow.users.get_by_id(user_id)
         except RepositoryNotFoundError:
             raise UserNotFoundError
         except RepositoryUnknownError:
@@ -103,10 +103,10 @@ class UserUseCase(IUseCase):
         except RepositoryUnknownError:
             raise UserDeleteError
 
-    async def delete_by_id(self, record_id: int) -> None:
+    async def delete_by_id(self, user_id: int) -> None:
         try:
             async with self.uow(autocommit=True):
-                await self.uow.users.delete_by_id(record_id)
+                await self.uow.users.delete_by_id(user_id)
         except RepositoryNotFoundError:
             raise UserNotFoundError
         except RepositoryUnknownError:
@@ -114,13 +114,21 @@ class UserUseCase(IUseCase):
 
     async def verify(self, credentials: dict) -> User:
         try:
+            username = credentials.get("username")
+            if not username:
+                raise UserIncorrectCredentialsError
+
             async with self.uow(autocommit=True):
-                user = await self.uow.users.get_by_username(credentials["username"])
+                user = await self.uow.users.get_by_username(username)
         except RepositoryNotFoundError:
             raise UserIncorrectCredentialsError
         except RepositoryUnknownError:
             raise UserVerifyError
 
-        if not Password.verify(credentials["password"], user.password):
+        password = credentials.get("password")
+        if not password:
+            raise UserIncorrectCredentialsError
+
+        if not Password.verify(password, user.password):
             raise UserIncorrectCredentialsError
         return user

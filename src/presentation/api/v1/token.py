@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 from starlette.requests import Request
-from starlette.status import HTTP_200_OK
+from starlette.status import HTTP_200_OK, HTTP_204_NO_CONTENT
 
 from application.use_cases.token import TokenUseCase
 from application.use_cases.users import UserUseCase
-from domain.entities.token import TokenDTO, TokenValidDTO
+from domain.entities.token import TokenDTO
 from domain.entities.users import UserRetrieveDTO
 
 router = APIRouter()
@@ -15,15 +15,13 @@ async def get_new_tokens(refresh_token: str):
     return await TokenUseCase.get_new_tokens(refresh_token)
 
 
-@router.get("/verify", response_model=TokenValidDTO, status_code=HTTP_200_OK)
+@router.get("/verify", status_code=HTTP_204_NO_CONTENT)
 async def verify_token(request: Request):
     await TokenUseCase.verify(request.headers)
-
-    return {"content": "valid"}
 
 
 @router.get("/user-info", response_model=UserRetrieveDTO, status_code=HTTP_200_OK)
 async def get_user_info(request: Request):
     payload = await TokenUseCase.verify(request.headers)
 
-    return await UserUseCase().get_by_id(payload["id"])
+    return await UserUseCase().get_by_id(payload.get("id"))
