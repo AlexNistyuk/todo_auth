@@ -29,10 +29,6 @@ class IRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def get_by_username(self, *args, **kwargs):
-        raise NotImplementedError
-
-    @abstractmethod
     async def delete_by_filters(self, *args, **kwargs):
         raise NotImplementedError
 
