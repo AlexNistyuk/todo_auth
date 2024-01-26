@@ -2,7 +2,6 @@ from starlette.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
     HTTP_403_FORBIDDEN,
-    HTTP_404_NOT_FOUND,
 )
 
 from domain.exceptions.base import BaseHTTPException
@@ -14,7 +13,7 @@ class UserNotUniqueData(BaseHTTPException):
 
 
 class UserNotFoundError(BaseHTTPException):
-    status_code = HTTP_404_NOT_FOUND
+    status_code = HTTP_400_BAD_REQUEST
     message = "User not found error"
 
 
