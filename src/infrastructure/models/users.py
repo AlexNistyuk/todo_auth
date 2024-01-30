@@ -28,4 +28,7 @@ class User(Base):
         String(20), unique=True, index=True, nullable=False
     )
     password: Mapped[str] = mapped_column(String(60), nullable=False)
-    role: Mapped[UserRole] = mapped_column(server_default=UserRole.user.value)
+
+    role: Mapped[UserRole] = mapped_column(
+        PgEnum(UserRole), server_default=UserRole.user.value
+    )
