@@ -23,6 +23,6 @@ jobs:
           version: "23.11.0"
 
       - name: Format with isort
-        uses: davidslusser/actions_python_isort@v5.12.0
+        uses: davidslusser/actions_python_isort@v1.0.0
         with:
           options: "--check --diff"
