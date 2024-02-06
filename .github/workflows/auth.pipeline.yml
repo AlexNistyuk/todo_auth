@@ -25,4 +25,4 @@ jobs:
       - name: Format with isort
         uses: davidslusser/actions_python_isort@v1.0.0
         with:
-          options: "--check --diff"
+          options: "--check --diff --profile black --filter-files"
