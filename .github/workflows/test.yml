@@ -9,3 +9,5 @@ jobs:
 #      - run: pip install black flake8 isort mypy pytest
       - uses: actions/checkout@v4
       - uses: TrueBrain/actions-flake8@v2
+        with:
+          max_line_length: 100
