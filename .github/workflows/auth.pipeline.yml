@@ -17,7 +17,7 @@ jobs:
 
       - name: Format with black
         uses: actions/checkout@v3
-      - uses: psf/black
-#      - uses: psf/black@stable
+      - uses: psf/black@stable
         with:
           options: "--check --verbose"
+          version: "23.11.0"
