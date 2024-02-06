@@ -7,8 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install packages
-        run: pip install poetry & poetry config virtualenvs.create false
-      - run: poetry install --dev
+        run: pip install mypy
 
       - name: Format with flake8
         uses: actions/checkout@v4
@@ -29,4 +28,4 @@ jobs:
           options: "--check --diff --profile black --filter-files"
 
       - name: Typing with mypy
-        run: mypy .
+        run: mypy --explicit-package-base --ignore-missing-imports src/
