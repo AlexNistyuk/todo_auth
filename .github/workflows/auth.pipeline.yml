@@ -29,3 +29,13 @@ jobs:
 
       - name: Typing with mypy
         run: mypy --explicit-package-base --ignore-missing-imports src/
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install packages
+        run: pip install poetry
+      - run: poetry config virtualenvs.create false
+      - run: poetry install
+
+      - name: Run tests
+        run: pytest
