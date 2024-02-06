@@ -3,11 +3,12 @@ name: todo_auth
 on: push
 
 jobs:
-  test:
+  linters:
     runs-on: ubuntu-latest
     steps:
-#      - run: pip install black flake8 isort mypy pytest
+      - run: pip install mypy
       - uses: actions/checkout@v4
       - uses: TrueBrain/actions-flake8@v2
         with:
           max_line_length: 100
+      - run: mypy src
