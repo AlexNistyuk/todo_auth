@@ -6,9 +6,16 @@ jobs:
   linters:
     runs-on: ubuntu-latest
     steps:
-      - run: pip install mypy
-      - uses: actions/checkout@v4
-      - uses: TrueBrain/actions-flake8@v2
-        with:
-          max_line_length: 100
-      - run: mypy src
+      - name: Install packages
+        run: pip install mypy black flake8
+
+      - name: Format with flake8
+        run: flake8 . --max-length=100
+
+#      uses: actions/checkout@v4
+#      uses: TrueBrain/actions-flake8@v2
+#      with:
+#        max_line_length: 100
+
+      - name: Format with Black
+        run: black .
