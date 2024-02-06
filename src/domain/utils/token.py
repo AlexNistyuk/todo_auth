@@ -8,7 +8,7 @@ settings = get_settings()
 
 
 class Token:
-    def __init__(self, user_id: int = None):
+    def __init__(self, user_id=None):
         self.user_id = user_id
 
     def get_access_token(self):

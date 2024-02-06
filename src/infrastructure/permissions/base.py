@@ -1,4 +1,3 @@
-from fastapi import Header
 from starlette.requests import Request
 
 from application.use_cases.token import TokenUseCase
@@ -26,7 +25,7 @@ class BasePermission(IPermission):
             raise UserPermissionDenied
         return self
 
-    async def __get_user_role(self, headers: Header) -> str:
+    async def __get_user_role(self, headers) -> str:
         payload = await self.token_use_case.verify(headers)
 
         user_id = payload.get("id")

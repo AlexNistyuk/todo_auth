@@ -64,17 +64,17 @@ class UserUseCase(IUseCase):
             raise UserUpdateError
         return result
 
-    async def get_by_filters(self, **filters) -> Sequence[User]:
+    async def get_by_filters(self, **filters) -> Sequence:
         try:
             async with self.uow(autocommit=True):
                 result = await self.uow.users.get_by_filters(**filters)
         except RepositoryNotFoundError:
-            raise []
+            raise UserNotFoundError
         except RepositoryUnknownError:
             raise UserRetrieveError
         return result
 
-    async def get_all(self) -> Sequence:
+    async def get_all(self) -> Sequence | list:
         try:
             async with self.uow(autocommit=True):
                 result = await self.uow.users.get_all()
