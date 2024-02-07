@@ -36,7 +36,6 @@ jobs:
         name: Create .env
       - run: cp ./.env.example ./.env
 
-#      - uses: actions/checkout@v3
         name: Install poetry
       - run: pipx install poetry
       - uses: actions/setup-python@v3
