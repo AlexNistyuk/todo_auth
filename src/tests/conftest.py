@@ -46,14 +46,6 @@ async def mock_user_service_verify(monkeypatch):
 
 
 @pytest.fixture()
-async def admin_permission(monkeypatch):
-    monkeypatch.setattr(
-        "infrastructure.permissions.base.BasePermission.__get_user_role",
-        lambda: "admin",
-    )
-
-
-@pytest.fixture()
 def tokens(monkeypatch):
     user_id = 1
 
