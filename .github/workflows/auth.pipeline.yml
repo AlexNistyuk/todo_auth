@@ -32,8 +32,14 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: test
-        run: ls
+      - name: List Files
+        id: list-files
+        uses: mirko-felice/list-files-action@v3.0.5
+        with:
+          repo: ${{ github.repository }}
+          ref: ${{ github.ref }}
+          path: "."
+
       - name: Install packages
         run: pip install poetry
       - run: poetry config virtualenvs.create false
