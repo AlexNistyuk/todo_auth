@@ -34,7 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: Create .env
-      - run: cp /.env.example /.env
+      - run: cp ./.env.example ./.env
 
       - uses: actions/checkout@v3
         name: Install poetry
