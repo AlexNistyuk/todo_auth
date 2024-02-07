@@ -27,8 +27,8 @@ class MockUserRepository:
     async def delete_by_filters(self, **filters):
         ...
 
-    async def delete_by_id(self, record_id: int) -> int | None:
-        return
+    async def delete_by_id(self, record_id: int):
+        return self.fake.pyint()
 
     async def get_by_username(self, username: str):
         return self.user
