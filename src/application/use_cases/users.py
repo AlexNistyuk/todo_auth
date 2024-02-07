@@ -1,3 +1,4 @@
+from passlib.exc import PasswordValueError
 from sqlalchemy import Sequence
 
 from application.use_cases.interfaces import IUseCase
@@ -28,7 +29,10 @@ class UserUseCase(IUseCase):
 
     async def insert(self, data: dict) -> int:
         password = data.pop("password")
-        hashed_password = Password.get_hashed_password(password)
+        try:
+            hashed_password = Password.get_hashed_password(password)
+        except PasswordValueError:
+            raise UserInsertError
 
         data["password"] = hashed_password
 
