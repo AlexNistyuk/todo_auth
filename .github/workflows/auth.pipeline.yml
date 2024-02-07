@@ -44,11 +44,3 @@ jobs:
           cache: "poetry"
       - run: poetry install
       - run: poetry run pytest
-  schemathesis:
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: schemathesis/action@v1
-      with:
-        schema: "https://example.schemathesis.io/openapi.json"
-#         OPTIONAL. Add Schemathesis.io token for pull request reports
-#        token: ${{ secrets.SCHEMATHESIS_TOKEN }}
