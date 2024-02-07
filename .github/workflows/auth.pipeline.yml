@@ -31,19 +31,14 @@ jobs:
         run: mypy --explicit-package-base --ignore-missing-imports src/
   tests:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11"]
     steps:
-      - name: List Files
-        id: list-files
-        uses: mirko-felice/list-files-action@v3.0.5
-        with:
-          repo: ${{ github.repository }}
-          ref: ${{ github.ref }}
-          path: "."
-
       - name: Install packages
         run: pip install poetry
       - run: poetry config virtualenvs.create false
-      - run: poetry install
+      - run: poetry install --sync
 
       - name: Run tests
         run: pytest
