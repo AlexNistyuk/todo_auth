@@ -1,3 +1,4 @@
+import faker
 import pytest
 from starlette.testclient import TestClient
 
@@ -5,48 +6,41 @@ from domain.utils.token import Token
 from infrastructure.models.users import UserRole
 from main import app
 from tests.factories import UserFactory
-from tests.mock import MockUserRepository
 
 client = TestClient(app=app)
+fake = faker.Faker()
 
 
-def mock_user_repo(user, monkeypatch):
-    mock_repo = MockUserRepository(user)
+def mock_user_repo(user, mocker):
     repo_path = "infrastructure.repositories.users.UserRepository"
 
-    monkeypatch.setattr(f"{repo_path}.insert", mock_repo.insert)
-    monkeypatch.setattr(f"{repo_path}.update_by_filters", mock_repo.update_by_filters)
-    monkeypatch.setattr(f"{repo_path}.update_by_id", mock_repo.update_by_id)
-    monkeypatch.setattr(f"{repo_path}.get_by_filters", mock_repo.get_by_filters)
-    monkeypatch.setattr(f"{repo_path}.get_all", mock_repo.get_all)
-    monkeypatch.setattr(f"{repo_path}.get_by_id", mock_repo.get_by_id)
-    monkeypatch.setattr(f"{repo_path}.delete_by_filters", mock_repo.delete_by_filters)
-    monkeypatch.setattr(f"{repo_path}.delete_by_id", mock_repo.delete_by_id)
-    monkeypatch.setattr(f"{repo_path}.get_by_username", mock_repo.get_by_username)
+    mocker.patch(f"{repo_path}.insert", return_value=fake.pyint())
+    mocker.patch(f"{repo_path}.update_by_id", return_value=fake.pyint())
+    mocker.patch(f"{repo_path}.get_by_filters", return_value=[user])
+    mocker.patch(f"{repo_path}.get_all", return_value=[user])
+    mocker.patch(f"{repo_path}.get_by_id", return_value=user)
+    mocker.patch(f"{repo_path}.delete_by_id", return_value=fake.pyint())
+    mocker.patch(f"{repo_path}.get_by_username", return_value=user)
 
 
 @pytest.fixture()
-async def mock_user_repo_user(monkeypatch):
+async def mock_user_repo_user(mocker):
     user = UserFactory(user_role=UserRole.user)
-    mock_user_repo(user, monkeypatch)
+    mock_user_repo(user, mocker)
 
 
 @pytest.fixture()
-async def mock_user_repo_admin(monkeypatch):
+async def mock_user_repo_admin(mocker):
     user = UserFactory(user_role=UserRole.admin)
-    mock_user_repo(user, monkeypatch)
+    mock_user_repo(user, mocker)
 
 
 @pytest.fixture()
-async def mock_user_service_verify(monkeypatch):
-    async def mock_verify(*args, **kwargs):
-        return UserFactory(UserRole.user)
-
-    monkeypatch.setattr("application.use_cases.users.UserUseCase.verify", mock_verify)
+async def mock_user_service_verify(mocker):
+    user = UserFactory(UserRole.user)
+    mocker.patch("application.use_cases.users.UserUseCase.verify", return_value=user)
 
 
 @pytest.fixture()
-def tokens(monkeypatch):
-    user_id = 1
-
-    return Token(user_id).get_tokens()
+def tokens():
+    return Token(fake.pyint()).get_tokens()
