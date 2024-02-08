@@ -36,7 +36,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         name: Create env file
-      - run: echo "${{ secrets.ENV_FILE }}" > .env
+      - run: echo "${{ secrets.ENV_FILE }}"
+#      - run: echo "${{ secrets.ENV_FILE }}" > .env
+
 #      - run: |
 #          touch .env
 #          echo WEB_HOST=${{ secrets.WEB_HOST }} >> .env
