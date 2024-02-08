@@ -34,9 +34,10 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Create env file
-      - run: echo "Hello world"
+#      - uses: actions/checkout@v3
+      - name: Create env file
+        run: echo "Hello world"
+
 #      - run: echo "${{ secrets.ENV_FILE }}"
 #      - run: echo "${{ secrets.ENV_FILE }}" > .env
 
@@ -62,14 +63,11 @@ jobs:
 #          echo HTTP_AUTH_KEYWORD=${{ secrets.HTTP_AUTH_KEYWORD }} >> .env
 #          cat .env
 
-        name: Install poetry
-      - run: pipx install poetry
-      - uses: actions/setup-python@v3
-        with:
-          python-version: "3.11"
-          cache: "poetry"
-      - run: poetry install
-      - run: poetry run pytest
-#  schemathesis:
-#    runs-on: ubuntu-latest
-#    steps:
+#        name: Install poetry
+#      - run: pipx install poetry
+#      - uses: actions/setup-python@v3
+#        with:
+#          python-version: "3.11"
+#          cache: "poetry"
+#      - run: poetry install
+#      - run: poetry run pytest
