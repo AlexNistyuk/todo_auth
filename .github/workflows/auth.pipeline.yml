@@ -47,7 +47,7 @@ jobs:
           python-version: "3.11"
           cache: "poetry"
       - run: poetry install
-      - run: poetry run pytest
+      - run: poetry run pytest -p no:warnings
   schemathesis:
     runs-on: ubuntu-latest
     steps:
@@ -64,4 +64,4 @@ jobs:
           python-version: "3.11"
           cache: "poetry"
       - run: poetry install
-      - run: poetry run pytest ./src/tests/schema.py
+      - run: poetry run pytest -p no:warnings ./src/tests/api_tests.py
