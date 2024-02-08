@@ -34,12 +34,14 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Create env file
-      - run: echo "${{ secrets.ENV_FILE }}" > .env
+      - name: Checkout
+        uses: actions/checkout@v3
 
-        name: Install poetry
-      - run: pipx install poetry
+      - name: Create env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Install poetry
+        run: pipx install poetry
       - uses: actions/setup-python@v3
         with:
           python-version: "3.11"
@@ -49,11 +51,14 @@ jobs:
   schemathesis:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-        name: Create env file
-      - run: echo "${{ secrets.ENV_FILE }}" > .env
-        name: Install poetry
-      - run: pipx install poetry
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Install poetry
+        run: pipx install poetry
       - uses: actions/setup-python@v3
         with:
           python-version: "3.11"
