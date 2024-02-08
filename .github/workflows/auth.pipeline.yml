@@ -38,28 +38,6 @@ jobs:
         name: Create env file
       - run: echo "${{ secrets.ENV_FILE }}" > .env
 
-#      - run: |
-#          touch .env
-#          echo WEB_HOST=${{ secrets.WEB_HOST }} >> .env
-#          echo WEB_PORT=${{ secrets.WEB_PORT }} >> .env
-#          echo WEB_CONTAINER_HOST=${{ secrets.WEB_CONTAINER_HOST }} >> .env
-#          echo WORKERS=${{ secrets.WORKERS }} >> .env
-#          echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> .env
-#          echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> .env
-#          echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} >> .env
-#          echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
-#          echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
-#          echo DB_URL=${{ secrets.DB_URL }} >> .env
-#          echo DB_POOL_SIZE=${{ secrets.DB_POOL_SIZE }} >> .env
-#          echo DB_MAX_OVERFLOW=${{ secrets.DB_MAX_OVERFLOW }} >> .env
-#          echo JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} >> .env
-#          echo JWT_ACCESS_TOKEN_EXPIRES_IN=${{ secrets.JWT_ACCESS_TOKEN_EXPIRES_IN }} >> .env
-#          echo JWT_REFRESH_TOKEN_EXPIRES_IN=${{ secrets.JWT_REFRESH_TOKEN_EXPIRES_IN }} >> .env
-#          echo JWT_ALGORITHM=${{ secrets.JWT_ALGORITHM }} >> .env
-#          echo HTTP_AUTH_HEADER=${{ secrets.HTTP_AUTH_HEADER }} >> .env
-#          echo HTTP_AUTH_KEYWORD=${{ secrets.HTTP_AUTH_KEYWORD }} >> .env
-#          cat .env
-
         name: Install poetry
       - run: pipx install poetry
       - uses: actions/setup-python@v3
@@ -68,3 +46,17 @@ jobs:
           cache: "poetry"
       - run: poetry install
       - run: poetry run pytest
+  schemathesis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        name: Create env file
+      - run: echo "${{ secrets.ENV_FILE }}" > .env
+        name: Install poetry
+      - run: pipx install poetry
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+      - run: poetry install
+      - run: poetry run pytest ./src/tests/schema.py
