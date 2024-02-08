@@ -5,6 +5,8 @@ from infrastructure.managers.interfaces import IManager
 
 settings = get_settings()
 
+print(settings.db_url)
+
 
 class DatabaseManager(IManager):
     """Database manager. Create engine and async session maker"""
