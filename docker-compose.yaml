@@ -9,8 +9,10 @@ services:
       - .env
     entrypoint:
       - ./entrypoints/fastapi.sh
+    depends_on:
+      - postgres_auth_app
 
-  postgres_app:
+  postgres_auth_app:
     image: postgres:alpine
     container_name: ${POSTGRES_HOST}
     ports:
