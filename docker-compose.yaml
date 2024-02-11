@@ -21,3 +21,7 @@ services:
       - .env
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+networks:
+  default:
+    name: ${DEFAULT_NETWORK}
