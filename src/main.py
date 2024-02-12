@@ -1,6 +1,5 @@
 from contextlib import asynccontextmanager
 
-import uvicorn
 from fastapi import FastAPI
 
 from infrastructure.managers.database import DatabaseManager
@@ -18,7 +17,3 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(api_router)
-
-
-if __name__ == "__main__":
-    uvicorn.run(app=app, host="localhost", port=8000)
