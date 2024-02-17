@@ -17,4 +17,4 @@ class IsAdmin(BasePermission):
 
 class IsUserOrAdmin(BasePermission):
     async def has_permission(self, user_role: str) -> bool:
-        return user_role in {UserRole.user.value, UserRole.admin.value}
+        return user_role in (UserRole.user.value, UserRole.admin.value)
