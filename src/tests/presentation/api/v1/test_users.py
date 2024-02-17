@@ -2,7 +2,6 @@ import faker
 import pytest
 
 from infrastructure.config import get_settings
-from tests.conftest import client
 
 settings = get_settings()
 
@@ -14,7 +13,7 @@ class TestUsers:
         self.fake = faker.Faker()
 
     @pytest.mark.asyncio
-    async def test_list_ok(self, mock_user_repo_admin, tokens):
+    async def test_list_ok(self, client, mock_user_repo_admin, tokens):
         response = client.get(
             url=self.url,
             headers={
@@ -27,7 +26,7 @@ class TestUsers:
         assert isinstance(response.json()[0], dict)
 
     @pytest.mark.asyncio
-    async def test_list_permission_denied(self, mock_user_repo_user, tokens):
+    async def test_list_permission_denied(self, client, mock_user_repo_user, tokens):
         response = client.get(
             url=self.url,
             headers={
@@ -38,7 +37,7 @@ class TestUsers:
         assert response.status_code == 403
 
     @pytest.mark.asyncio
-    async def test_retrieve_ok(self, mock_user_repo_admin, tokens):
+    async def test_retrieve_ok(self, client, mock_user_repo_admin, tokens):
         response = client.get(
             url=self.url + f"/{self.fake.pyint()}",
             headers={
@@ -50,7 +49,7 @@ class TestUsers:
         assert isinstance(response.json(), dict)
 
     @pytest.mark.asyncio
-    async def test_retrieve_unauthorized(self, tokens):
+    async def test_retrieve_unauthorized(self, client, tokens):
         response = client.get(
             url=self.url + f"/{self.fake.pyint()}",
             headers={
@@ -61,7 +60,7 @@ class TestUsers:
         assert response.status_code == 401
 
     @pytest.mark.asyncio
-    async def test_delete_ok(self, mock_user_repo_admin, tokens):
+    async def test_delete_ok(self, client, mock_user_repo_admin, tokens):
         response = client.delete(
             url=self.url + f"/{self.fake.pyint()}",
             headers={
@@ -72,7 +71,7 @@ class TestUsers:
         assert response.status_code == 204
 
     @pytest.mark.asyncio
-    async def test_delete_permission_denied(self, mock_user_repo_user, tokens):
+    async def test_delete_permission_denied(self, client, mock_user_repo_user, tokens):
         response = client.delete(
             url=self.url + f"/{self.fake.pyint()}",
             headers={

@@ -1,8 +1,6 @@
 import faker
 import pytest
 
-from tests.conftest import client
-
 
 class TestAuthRegister:
     url = "api/v1/auth/register"
@@ -11,7 +9,7 @@ class TestAuthRegister:
         self.fake = faker.Faker()
 
     @pytest.mark.asyncio
-    async def test_register_ok(self, mock_user_repo_user):
+    async def test_register_ok(self, client, mock_user_repo_user):
         response = client.post(
             url=self.url,
             json={"username": self.fake.user_name(), "password": self.fake.password()},
@@ -22,7 +20,7 @@ class TestAuthRegister:
         assert isinstance(response.json()["id"], int)
 
     @pytest.mark.asyncio
-    async def test_register_without_username(self):
+    async def test_register_without_username(self, client):
         response = client.post(url=self.url, json={"password": self.fake.password()})
 
         assert response.status_code == 422
@@ -35,7 +33,7 @@ class TestAuthLogin:
         self.fake = faker.Faker()
 
     @pytest.mark.asyncio
-    async def test_login_ok(self, mock_user_service_verify):
+    async def test_login_ok(self, client, mock_user_service_verify):
         response = client.post(
             url=self.url,
             json={"username": self.fake.user_name(), "password": self.fake.password()},
@@ -47,7 +45,7 @@ class TestAuthLogin:
         assert response.json().get("refresh_token")
 
     @pytest.mark.asyncio
-    async def test_login_without_username(self):
+    async def test_login_without_username(self, client):
         response = client.post(url=self.url, json={"password": self.fake.password()})
 
         assert response.status_code == 422

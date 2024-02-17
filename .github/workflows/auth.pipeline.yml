@@ -64,4 +64,4 @@ jobs:
           python-version: "3.11"
           cache: "poetry"
       - run: poetry install
-      - run: poetry run pytest -p no:warnings -m "schemathesis" ./src/tests/api_tests.py
+      - run: poetry run pytest -p no:warnings -m "schemathesis"

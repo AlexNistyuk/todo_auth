@@ -7,8 +7,6 @@ services:
       - ${WEB_PORT}:${WEB_PORT}
     env_file:
       - .env
-    entrypoint:
-      - ./entrypoints/fastapi.sh
     depends_on:
       - postgres_auth_app
 

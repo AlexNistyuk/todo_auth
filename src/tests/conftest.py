@@ -2,13 +2,18 @@ import faker
 import pytest
 from starlette.testclient import TestClient
 
+from domain.enums.users import UserRole
 from domain.utils.token import Token
-from infrastructure.models.users import UserRole
 from main import app
 from tests.factories import UserFactory
 
-client = TestClient(app=app)
 fake = faker.Faker()
+
+
+@pytest.fixture()
+def client():
+    with TestClient(app=app) as client:
+        yield client
 
 
 def mock_user_repo(user, mocker):

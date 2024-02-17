@@ -19,13 +19,14 @@ from domain.exceptions.users import (
 )
 from domain.utils.password import Password
 from infrastructure.models.users import User
-from infrastructure.uow.base import UnitOfWork
+from infrastructure.uow.interfaces import IUnitOfWork
 
 
 class UserUseCase(IUseCase):
-    """Use case for UserUnitOfWork"""
+    """Use case for users"""
 
-    uow = UnitOfWork()
+    def __init__(self, uow: IUnitOfWork) -> None:
+        self.uow = uow
 
     async def insert(self, data: dict) -> int:
         password = data.pop("password")

@@ -2,7 +2,6 @@ import faker
 import pytest
 
 from infrastructure.config import get_settings
-from tests.conftest import client
 
 settings = get_settings()
 
@@ -11,7 +10,7 @@ class TestTokenRefresh:
     url = "api/v1/token/refresh"
 
     @pytest.mark.asyncio
-    async def test_refresh_ok(self, mock_user_repo_user, tokens):
+    async def test_refresh_ok(self, client, mock_user_repo_user, tokens):
         response = client.post(
             url=self.url, params={"refresh_token": tokens["refresh_token"]}
         )
@@ -22,7 +21,9 @@ class TestTokenRefresh:
         assert response.json().get("access_token")
 
     @pytest.mark.asyncio
-    async def test_refresh_using_access_token(self, mock_user_repo_user, tokens):
+    async def test_refresh_using_access_token(
+        self, client, mock_user_repo_user, tokens
+    ):
         response = client.post(
             url=self.url, params={"refresh_token": tokens["access_token"]}
         )
@@ -37,7 +38,7 @@ class TestTokenVerify:
         self.fake = faker.Faker()
 
     @pytest.mark.asyncio
-    async def test_verify_ok(self, tokens):
+    async def test_verify_ok(self, client, tokens):
         response = client.get(
             url=self.url,
             headers={
@@ -48,7 +49,7 @@ class TestTokenVerify:
         assert response.status_code == 204
 
     @pytest.mark.asyncio
-    async def test_verify_incorrect_auth_keyword(self, tokens):
+    async def test_verify_incorrect_auth_keyword(self, client, tokens):
         response = client.get(
             url=self.url,
             headers={
@@ -66,7 +67,7 @@ class TestTokenUserInfo:
         self.fake = faker.Faker()
 
     @pytest.mark.asyncio
-    async def test_user_info_ok(self, mock_user_repo_user, tokens):
+    async def test_user_info_ok(self, client, mock_user_repo_user, tokens):
         response = client.get(
             url=self.url,
             headers={
@@ -79,7 +80,7 @@ class TestTokenUserInfo:
         assert response.json().get("id")
 
     @pytest.mark.asyncio
-    async def test_user_info_using_refresh_token(self, tokens):
+    async def test_user_info_using_refresh_token(self, client, tokens):
         response = client.get(
             url=self.url,
             headers={

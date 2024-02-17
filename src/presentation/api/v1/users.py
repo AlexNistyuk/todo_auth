@@ -1,3 +1,4 @@
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter
 from fastapi.params import Depends
 from starlette.status import (
@@ -7,7 +8,7 @@ from starlette.status import (
     HTTP_401_UNAUTHORIZED,
 )
 
-from application.use_cases.users import UserUseCase
+from application.dependencies import Container
 from domain.entities.users import UserRetrieveDTO
 from infrastructure.permissions.users import IsAdmin, IsUserOrAdmin
 
@@ -20,8 +21,12 @@ router = APIRouter()
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
 )
-async def get_all_users(permission=Depends(IsAdmin())):
-    return await UserUseCase().get_all()
+@inject
+async def get_all_users(
+    permission=Depends(IsAdmin()),
+    user_use_case=Depends(Provide[Container.user_use_case]),
+):
+    return await user_use_case.get_all()
 
 
 @router.get(
@@ -30,8 +35,13 @@ async def get_all_users(permission=Depends(IsAdmin())):
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
 )
-async def get_user_by_id(user_id: int, permission=Depends(IsUserOrAdmin())):
-    return await UserUseCase().get_by_id(user_id)
+@inject
+async def get_user_by_id(
+    user_id: int,
+    permission=Depends(IsUserOrAdmin()),
+    user_use_case=Depends(Provide[Container.user_use_case]),
+):
+    return await user_use_case.get_by_id(user_id)
 
 
 @router.delete(
@@ -39,5 +49,10 @@ async def get_user_by_id(user_id: int, permission=Depends(IsUserOrAdmin())):
     status_code=HTTP_204_NO_CONTENT,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
 )
-async def delete_user(user_id: int, permission=Depends(IsAdmin())):
-    await UserUseCase().delete_by_id(user_id)
+@inject
+async def delete_user(
+    user_id: int,
+    permission=Depends(IsAdmin()),
+    user_use_case=Depends(Provide[Container.user_use_case]),
+):
+    await user_use_case.delete_by_id(user_id)
