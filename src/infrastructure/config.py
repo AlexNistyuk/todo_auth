@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     jwt_algorithm: str
     http_auth_keyword: str
     http_auth_header: str
+    superuser_username: str
+    superuser_password: str
 
     model_config = SettingsConfigDict(env_file=ENV_FILE_PATH, extra="allow")
 
