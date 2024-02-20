@@ -12,5 +12,3 @@ COPY poetry.lock .
 RUN poetry install --no-dev
 
 COPY . .
-
-ENTRYPOINT ["./entrypoints/fastapi.sh"]
