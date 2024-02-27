@@ -9,12 +9,17 @@ jobs:
       - name: Install packages
         run: pip install mypy
 
-      - name: Format with flake8
+      - name: Flake8
         uses: actions/checkout@v4
       - uses: TrueBrain/actions-flake8@v2
         with:
           max_line_length: 100
 
+      - name: Mypy
+        run: mypy --explicit-package-base --ignore-missing-imports src/
+  formaters:
+    runs-on: ubuntu-latest
+    steps:
       - name: Format with black
         uses: actions/checkout@v3
       - uses: psf/black@stable
@@ -26,6 +31,37 @@ jobs:
         uses: davidslusser/actions_python_isort@v1.0.0
         with:
           options: "--check --diff --profile black --filter-files"
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
 
-      - name: Typing with mypy
-        run: mypy --explicit-package-base --ignore-missing-imports src/
+      - name: Create env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+      - run: poetry install
+      - run: poetry run pytest -p no:warnings -m "not schemathesis"
+  schemathesis:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - name: Install poetry
+        run: pipx install poetry
+      - uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+          cache: "poetry"
+      - run: poetry install
+      - run: poetry run pytest -p no:warnings -m "schemathesis"

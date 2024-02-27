@@ -9,15 +9,6 @@ ENV_FILE_PATH = os.path.join(BASE_DIR.parent.parent, ".env")
 
 
 class Settings(BaseSettings):
-    web_host: str
-    web_port: int
-    web_container_host: str
-    workers: int
-    postgres_host: str
-    postgres_port: int
-    postgres_db: str
-    postgres_user: str
-    postgres_password: str
     db_url: str
     db_pool_size: int
     db_max_overflow: int
@@ -27,8 +18,10 @@ class Settings(BaseSettings):
     jwt_algorithm: str
     http_auth_keyword: str
     http_auth_header: str
+    superuser_username: str
+    superuser_password: str
 
-    model_config = SettingsConfigDict(env_file=ENV_FILE_PATH)
+    model_config = SettingsConfigDict(env_file=ENV_FILE_PATH, extra="allow")
 
 
 @lru_cache

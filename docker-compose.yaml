@@ -7,10 +7,10 @@ services:
       - ${WEB_PORT}:${WEB_PORT}
     env_file:
       - .env
-    entrypoint:
-      - ./entrypoints/fastapi.sh
+    depends_on:
+      - postgres_auth_app
 
-  postgres_app:
+  postgres_auth_app:
     image: postgres:alpine
     container_name: ${POSTGRES_HOST}
     ports:
@@ -19,3 +19,7 @@ services:
       - .env
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
+
+networks:
+  default:
+    name: ${DEFAULT_NETWORK}

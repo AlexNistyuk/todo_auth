@@ -1,24 +1,34 @@
 from contextlib import asynccontextmanager
 
-import uvicorn
 from fastapi import FastAPI
 
+from application.dependencies import Container
 from infrastructure.managers.database import DatabaseManager
+from infrastructure.middlewares.auth_middleware.init import init_auth_middleware
 from presentation.routers import router as api_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    db_manager = await DatabaseManager.connect()
+    await DatabaseManager.connect()
 
     yield
 
-    await db_manager.close()
+    await DatabaseManager.close()
 
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(api_router)
 
+container = Container()
+container.wire(
+    modules=[
+        "presentation.api.v1.auth",
+        "presentation.api.v1.token",
+        "presentation.api.v1.users",
+        "infrastructure.middlewares.auth_middleware.init",
+    ]
+)
 
-if __name__ == "__main__":
-    uvicorn.run(app=app, host="localhost", port=8000)
+
+init_auth_middleware(app)
