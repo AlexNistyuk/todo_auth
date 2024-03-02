@@ -7,7 +7,7 @@ settings = get_settings()
 
 
 class TestTokenRefresh:
-    url = "api/v1/token/refresh"
+    url = "api/v1/token/refresh/"
 
     @pytest.mark.asyncio
     async def test_refresh_ok(self, client, mock_user_repo_user, tokens):
@@ -32,7 +32,7 @@ class TestTokenRefresh:
 
 
 class TestTokenVerify:
-    url = "api/v1/token/verify"
+    url = "api/v1/token/verify/"
 
     def setup_method(self):
         self.fake = faker.Faker()
@@ -61,7 +61,7 @@ class TestTokenVerify:
 
 
 class TestTokenUserInfo:
-    url = "api/v1/token/user-info"
+    url = "api/v1/token/user-info/"
 
     def setup_method(self):
         self.fake = faker.Faker()

@@ -4,3 +4,4 @@
 /.git
 /postgres_data
 /.github
+/.env

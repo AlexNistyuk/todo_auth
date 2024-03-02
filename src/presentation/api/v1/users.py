@@ -30,7 +30,7 @@ async def get_all_users(
 
 
 @router.get(
-    "/{user_id}",
+    "/{user_id}/",
     response_model=UserRetrieveDTO,
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
@@ -45,7 +45,7 @@ async def get_user_by_id(
 
 
 @router.delete(
-    "/{user_id}",
+    "/{user_id}/",
     status_code=HTTP_204_NO_CONTENT,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
 )

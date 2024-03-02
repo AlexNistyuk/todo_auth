@@ -11,11 +11,11 @@ def init_auth_middleware(
     ignore_paths=(
         "/docs",
         "/openapi.json",
-        "/api/v1/auth/register",
-        "/api/v1/auth/login",
-        "/api/v1/token/refresh",
-        "/api/v1/token/verify",
-        "/api/v1/token/user-info",
+        "/api/v1/auth/register/",
+        "/api/v1/auth/login/",
+        "/api/v1/token/refresh/",
+        "/api/v1/token/verify/",
+        "/api/v1/token/user-info/",
     ),
     token_use_case=Provide[Container.token_use_case],
 ):

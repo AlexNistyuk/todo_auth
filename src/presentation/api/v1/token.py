@@ -16,7 +16,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/refresh",
+    "/refresh/",
     response_model=TokenDTO,
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
@@ -29,7 +29,7 @@ async def get_new_tokens(
 
 
 @router.get(
-    "/verify", status_code=HTTP_204_NO_CONTENT, responses={HTTP_401_UNAUTHORIZED: {}}
+    "/verify/", status_code=HTTP_204_NO_CONTENT, responses={HTTP_401_UNAUTHORIZED: {}}
 )
 @inject
 async def verify_token(
@@ -39,7 +39,7 @@ async def verify_token(
 
 
 @router.get(
-    "/user-info",
+    "/user-info/",
     response_model=UserRetrieveDTO,
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},
