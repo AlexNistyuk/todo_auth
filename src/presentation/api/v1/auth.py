@@ -17,7 +17,7 @@ router = APIRouter()
 
 
 @router.post(
-    "/login",
+    "/login/",
     response_model=TokenDTO,
     status_code=HTTP_200_OK,
     responses={HTTP_401_UNAUTHORIZED: {}},
@@ -32,7 +32,7 @@ async def login(
 
 
 @router.post(
-    "/register",
+    "/register/",
     response_model=UserIdDTO,
     status_code=HTTP_201_CREATED,
     responses={HTTP_401_UNAUTHORIZED: {}, HTTP_400_BAD_REQUEST: {}},

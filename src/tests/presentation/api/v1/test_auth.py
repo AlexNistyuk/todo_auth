@@ -3,7 +3,7 @@ import pytest
 
 
 class TestAuthRegister:
-    url = "api/v1/auth/register"
+    url = "api/v1/auth/register/"
 
     def setup_method(self):
         self.fake = faker.Faker()
@@ -27,7 +27,7 @@ class TestAuthRegister:
 
 
 class TestAuthLogin:
-    url = "api/v1/auth/login"
+    url = "api/v1/auth/login/"
 
     def setup_method(self):
         self.fake = faker.Faker()

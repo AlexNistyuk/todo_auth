@@ -7,7 +7,7 @@ settings = get_settings()
 
 
 class TestUsers:
-    url = "api/v1/users"
+    url = "api/v1/users/"
 
     def setup_method(self):
         self.fake = faker.Faker()
@@ -39,7 +39,7 @@ class TestUsers:
     @pytest.mark.asyncio
     async def test_retrieve_ok(self, client, mock_user_repo_admin, tokens):
         response = client.get(
-            url=self.url + f"/{self.fake.pyint()}",
+            url=self.url + f"{self.fake.pyint()}/",
             headers={
                 settings.http_auth_header: f"{settings.http_auth_keyword} {tokens['access_token']}"
             },
@@ -51,7 +51,7 @@ class TestUsers:
     @pytest.mark.asyncio
     async def test_retrieve_unauthorized(self, client, tokens):
         response = client.get(
-            url=self.url + f"/{self.fake.pyint()}",
+            url=self.url + f"{self.fake.pyint()}/",
             headers={
                 settings.http_auth_header: f"{settings.http_auth_keyword} {tokens['refresh_token']}"
             },
@@ -62,7 +62,7 @@ class TestUsers:
     @pytest.mark.asyncio
     async def test_delete_ok(self, client, mock_user_repo_admin, tokens):
         response = client.delete(
-            url=self.url + f"/{self.fake.pyint()}",
+            url=self.url + f"{self.fake.pyint()}/",
             headers={
                 settings.http_auth_header: f"{settings.http_auth_keyword} {tokens['access_token']}"
             },
@@ -73,7 +73,7 @@ class TestUsers:
     @pytest.mark.asyncio
     async def test_delete_permission_denied(self, client, mock_user_repo_user, tokens):
         response = client.delete(
-            url=self.url + f"/{self.fake.pyint()}",
+            url=self.url + f"{self.fake.pyint()}/",
             headers={
                 settings.http_auth_header: f"{settings.http_auth_keyword} {tokens['access_token']}"
             },
