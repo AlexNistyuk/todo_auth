@@ -20,6 +20,10 @@ class Settings(BaseSettings):
     http_auth_header: str
     superuser_username: str
     superuser_password: str
+    allow_origins: list
+    allow_methods: list
+    allow_headers: list
+    allow_credentials: bool
 
     model_config = SettingsConfigDict(env_file=ENV_FILE_PATH, extra="allow")
 

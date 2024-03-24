@@ -9,7 +9,7 @@ from starlette.status import (
 )
 
 from application.dependencies import Container
-from domain.entities.token import TokenDTO
+from domain.entities.token import TokenDTO, TokenRefreshDTO
 from domain.entities.users import UserRetrieveDTO
 
 router = APIRouter()
@@ -23,8 +23,11 @@ router = APIRouter()
 )
 @inject
 async def get_new_tokens(
-    refresh_token: str, token_use_case=Depends(Provide[Container.token_use_case])
+    refresh_token_dto: TokenRefreshDTO,
+    token_use_case=Depends(Provide[Container.token_use_case]),
 ):
+    refresh_token = refresh_token_dto.model_dump().get("refresh_token")
+
     return await token_use_case.get_new_tokens(refresh_token)
 
 

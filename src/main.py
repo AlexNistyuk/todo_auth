@@ -1,11 +1,11 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
-from starlette.middleware.cors import CORSMiddleware
 
 from application.dependencies import Container
 from infrastructure.managers.database import DatabaseManager
 from infrastructure.middlewares.auth_middleware.init import init_auth_middleware
+from infrastructure.middlewares.cors_middleware.init import init_cors_middleware
 from presentation.routers import router as api_router
 
 
@@ -31,20 +31,5 @@ container.wire(
     ]
 )
 
-# TODO make a function like init_auth_middleware
-
-origins = [
-    "http://localhost:3000",
-    "http://localhost:8000",
-]
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
 init_auth_middleware(app)
+init_cors_middleware(app)
