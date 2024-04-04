@@ -12,8 +12,10 @@ class TestTokenRefresh:
     @pytest.mark.asyncio
     async def test_refresh_ok(self, client, mock_user_repo_user, tokens):
         response = client.post(
-            url=self.url, params={"refresh_token": tokens["refresh_token"]}
+            url=self.url, json={"refresh_token": tokens["refresh_token"]}
         )
+
+        print(response.json())
 
         assert response.status_code == 200
         assert isinstance(response.json(), dict)
@@ -25,8 +27,10 @@ class TestTokenRefresh:
         self, client, mock_user_repo_user, tokens
     ):
         response = client.post(
-            url=self.url, params={"refresh_token": tokens["access_token"]}
+            url=self.url, json={"refresh_token": tokens["access_token"]}
         )
+
+        print(response.json())
 
         assert response.status_code == 401
 
